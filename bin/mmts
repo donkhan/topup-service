@@ -1,0 +1,56 @@
+#!/bin/bash
+
+if [ $# == 0 ];
+then
+    echo "Usage mmts start/stop/status/restart"
+    exit
+fi
+
+
+start(){
+    echo "Going to start mmts server"
+    nohup python src/mmtsserver.py &> /var/log/webserver.log &
+    echo "MMTS Server Started. Check logs in /var/log/mmts.log"
+}
+
+stop(){
+    echo "Finding Pid..."
+    lines=`ps -aux | grep mmtsserver |  awk '{print $2}'`
+    echo "Going to kill the process"
+    kill -9 $lines 2> /dev/null
+    echo "MMTS Server Stopped"
+}
+
+
+status(){
+    curl http://localhost:5555/hello
+}
+
+if [ $1 == 'restart' ];
+then
+    stop
+    start
+fi
+
+if [ $1 = 'start' ];
+then
+    start
+fi
+
+if [ $1 = 'stop' ];
+then
+    stop
+fi
+
+if [ $1 = 'status' ];
+then    
+    status
+fi
+
+
+
+
+
+
+
+
